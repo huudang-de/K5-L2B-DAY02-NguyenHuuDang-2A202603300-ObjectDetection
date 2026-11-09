@@ -11,7 +11,14 @@
 
 ## 2. Schema và mini guideline
 
-Dẫn tới [GUIDELINE_MINI.md](../../GUIDELINE_MINI.md). Tóm tắt ba ca mơ hồ đã quyết định, cách áp dụng schema và phần cần giảng viên làm rõ.
+Chi tiết định nghĩa lớp và quy tắc được lưu tại [GUIDELINE_MINI.md](../../GUIDELINE_MINI.md). 
+
+Tóm tắt 3 ca mơ hồ chính đã xử lý:
+1. **`drive_001` (Xe ở xa bị mờ):** Hàng xe càng về sau càng mờ -> **Quyết định: Bỏ qua**, vì quá mờ không đủ chi tiết để model học, tránh dương tính giả.
+2. **`drive_001` (Người đi bộ cạnh ô tô):** Có cả người và ô tô -> **Quyết định: Chỉ gán box cho ô tô, bỏ qua người**, do người đi bộ nằm ngoài phạm vi 4 lớp của schema.
+3. **`drive_008` (Xe bị cắt bởi mép ảnh):** Xe bị cắt rìa khung hình không rõ hình dạng -> **Quyết định: Bỏ qua (không gán)**, tuân thủ nguyên tắc không đoán mò khi thiếu đặc trưng thị giác.
+
+*Phần cần giảng viên làm rõ:* Sự không đồng nhất thứ tự Class ID giữa tài liệu hướng dẫn (`README.md`/`data.yaml`: 1=truck, 2=bus, 3=van) và tập nhãn chuẩn (`gold_train_labels`: 1=van, 2=truck, 3=bus).
 
 ## 3. Annotation và self-QC
 
@@ -25,16 +32,26 @@ Dẫn tới [GUIDELINE_MINI.md](../../GUIDELINE_MINI.md). Tóm tắt ba ca mơ h
 
 | Chỉ số | Trước sửa | Sau sửa nếu có |
 |---|---:|---:|
-| TP | | |
-| FP | | |
-| FN | | |
-| Precision | | |
-| Recall | | |
-| F1 | | |
-| mean_iou_of_matches | | |
-| passed | | |
+| TP | 464 | - |
+| FP | 537 | - |
+| FN | 189 | - |
+| Precision | 0.4635 | - |
+| Recall | 0.7106 | - |
+| F1 | 0.5611 | - |
+| mean_iou_of_matches | 0.7941 | - |
+| passed | false | - |
 
-Dẫn tới `outputs/annotation_evaluation.json` trong repo. Nếu rework, ghi ảnh, lỗi đã kiểm, quyết định sửa/giữ và lý do. Không suy nguyên nhân chỉ từ FP/FN. Không có rework thì ghi rõ.
+Dẫn tới `outputs/annotation_evaluation.json` trong repo.
+
+### Phân tích nguyên nhân và phát hiện sự lệch pha giữa Gold và Schema:
+1. **Lệch pha Class ID giữa nhãn Gold và Schema bài lab:**
+   - Đề bài (`README.md` và `data.yaml`) quy định schema 4 lớp gồm: `0: car, 1: truck, 2: bus, 3: van`. Học viên tuân thủ đúng 100% theo schema này khi gán nhãn.
+   - Tuy nhiên, qua đối chiếu trực tiếp với tập `gold_train_labels/` do giảng viên phát, thực tế bộ Gold lại được gán theo thứ tự khác: `0: car, 1: van, 2: truck, 3: bus`.
+   - Vì script `evaluate_annotations.py` bắt buộc khớp đúng cả `class_id` lẫn IoU, sự lệch pha class ID này khiến toàn bộ các xe tải (`truck`), xe khách/buýt (`bus`) và xe van (`van`) bị đánh giá là sai lớp (tăng cả FP và FN). Khi thử nghiệm ánh xạ đúng lại các lớp cho khớp với Gold, số TP tăng mạnh từ 464 lên 571 box và Recall đạt tới 87.44%.
+2. **Độ bám sát và phạm vi gán nhãn:**
+   - Chỉ số `mean_iou_of_matches` đạt **0.7941** (vượt xa chuẩn yêu cầu >= 0.70), khẳng định các box học viên vẽ rất khít và chuẩn theo thân xe.
+   - Lỗi FP cao (537) chủ yếu do học viên gán đầy đủ cả các xe đỗ trong bãi, xe đỗ trên vỉa hè / khuất sau lùm cây bên lề đường (ví dụ ảnh `drive_001.jpg`), trong khi nhãn Gold của giảng viên chỉ tập trung gán các xe đang lưu thông trên làn đường chính.
+3. **Quyết định:** Giữ nguyên kết quả gốc ban đầu đã khóa theo đúng tinh thần quy chế thi/thực hành, ghi nhận rõ ràng sự lệch pha schema của Gold vào báo cáo để giảng viên chấm và đối chiếu.
 
 ## 5. Kết quả YOLO
 
