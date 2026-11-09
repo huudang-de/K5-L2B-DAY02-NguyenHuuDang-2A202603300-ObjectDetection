@@ -89,9 +89,9 @@ Dẫn tới `outputs/annotation_evaluation.json` trong repo.
      - Đặc biệt, sự không đồng nhất về Class ID giữa Schema đề bài và nhãn chuẩn Gold (như đã phát hiện ở CP5: Gold gán 1=van, 2=truck, 3=bus trong khi schema đề bài là 1=truck, 2=bus, 3=van) trực tiếp gây ra mâu thuẫn đặc trưng khi đánh giá trên tập eval chuẩn.
 
 4. **Vì sao không dùng 10 ảnh eval để train? Vai trò validation của chúng trong notebook là gì?**
-   - **Vì sao không dùng để train:** Để tránh hiện tượng rò rỉ dữ liệu (*Data Leakage*) và học vẹt (*Overfitting*). Nếu đưa ảnh eval vào train, mô hình sẽ thuộc lòng các ảnh này và cho ra điểm số cao giả tạo, nhưng mất khả năng tổng quát hóa khi gặp dữ liệu thực tế mới.
+   - **Vì sao không dùng để train:** Để tránh hiện tượng rò rỉ dữ liệu và học vẹt. Nếu đưa ảnh eval vào train, mô hình sẽ thuộc lòng các ảnh này và cho ra điểm số cao giả tạo, nhưng mất khả năng tổng quát hóa khi gặp dữ liệu thực tế mới.
    - **Vai trò validation:**
-     1. Đo lường khách quan khả năng tổng quát hóa (*generalization*) của mô hình trên dữ liệu chưa từng xuất hiện trong quá trình học.
+     1. Đo lường khách quan khả năng tổng quát hóa của mô hình trên dữ liệu chưa từng xuất hiện trong quá trình học.
      2. Cung cấp tín hiệu đánh giá độc lập (validation loss và mAP) qua từng epoch huấn luyện để thuật toán tự động lưu lại trọng số tốt nhất (**`best.pt`**), ngăn chặn việc dừng ở các epoch bị overfit.
 
 ## 6. Khó khăn và cách xử lý
