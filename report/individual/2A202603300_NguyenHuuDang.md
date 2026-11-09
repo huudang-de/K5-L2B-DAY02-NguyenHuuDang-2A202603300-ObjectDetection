@@ -19,7 +19,7 @@ Dẫn tới [GUIDELINE_MINI.md](../../GUIDELINE_MINI.md). Tóm tắt ba ca mơ h
 - Kết quả checker và lỗi đã xử lý: Đạt 50/50 file hợp lệ; đã xử lý đưa file từ thư mục CVAT xuất về đúng vị trí dataset/labels/train/
 - Danh sách ít nhất 10 ảnh đã rà bằng mắt:drive_001, drive_005, drive_008, drive_012, drive_019, drive_024, drive_030, drive_038, drive_044, drive_050
 - Lỗi bỏ sót/box/class phát hiện khi rà và cách sửa: Phát hiện 4 box chưa được gắn nhãn, đã tiến hành sửa và cập nhật lại nhãn.
-- Commit khóa nhãn ban đầu: a40497f
+- Commit khóa nhãn ban đầu: d2551ba
 
 ## 4. Gold QC và rework
 
